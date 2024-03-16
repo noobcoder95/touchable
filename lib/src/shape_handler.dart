@@ -92,8 +92,6 @@ class ShapeHandler {
     ScrollController? scrollController,
     AxisDirection direction = AxisDirection.down,
   }) async {
-    var touchPoint = _getActualOffsetFromScrollController(
-        TouchCanvasUtil.getPointFromGestureDetail(gesture.gestureDetail), scrollController, direction);
     if (!_registeredGestures.contains(gesture.gestureType)) return;
     final panningShapeIdLocal = panningShapeId;
     if (gesture.gestureType == GestureType.onPanUpdate) {

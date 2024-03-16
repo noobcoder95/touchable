@@ -1,8 +1,6 @@
-import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:touchable/src/canvas_touch_detector.dart';
 import 'package:touchable/src/shape_handler.dart';
@@ -20,7 +18,7 @@ import 'package:touchable/src/types/types.dart';
 
 class TouchyCanvas {
   final Canvas _canvas;
-
+  final Object? panningShapeId;
   late final ShapeHandler _shapeHandler;
 
   ///[TouchyCanvas] helps you add gesture callbacks to the shapes you draw.
