@@ -16,7 +16,7 @@ import 'package:touchable/touchable.dart';
 
 void testTranslucent() {
   group('SHape Handler : Translucent hittest', () {
-    var shapeHandler = ShapeHandler();
+    var shapeHandler = ShapeHandler(null);
     var resultList = [];
 
     Map<GestureType, Function> getMap(Function function) {

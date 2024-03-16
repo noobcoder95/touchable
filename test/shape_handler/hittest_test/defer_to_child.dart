@@ -16,7 +16,7 @@ import 'package:touchable/touchable.dart';
 
 void testDeferToChild() {
   group('SHape Handler : Defer to child hittest', () {
-    var shapeHandler = ShapeHandler();
+    var shapeHandler = ShapeHandler(null);
     var resultList = [];
 
     Map<GestureType, Function> getMap(Function function) {
