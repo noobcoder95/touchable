@@ -1,7 +1,10 @@
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Image;
+import 'package:touchable/src/canvas_touch_detector.dart';
 import 'package:touchable/src/shape_handler.dart';
 import 'package:touchable/src/shapes/arc.dart';
 import 'package:touchable/src/shapes/circle.dart';
@@ -13,25 +16,24 @@ import 'package:touchable/src/shapes/point.dart';
 import 'package:touchable/src/shapes/rectangle.dart';
 import 'package:touchable/src/shapes/rounded_rectangle.dart';
 import 'package:touchable/src/shapes/util.dart';
-import 'package:touchable/touchable.dart';
+import 'package:touchable/src/types/types.dart';
 
 class TouchyCanvas {
   final Canvas _canvas;
-  final Object? panningShapeId;
 
-  late final ShapeHandler _shapeHandler ;
+  late final ShapeHandler _shapeHandler;
 
   ///[TouchyCanvas] helps you add gesture callbacks to the shapes you draw.
   ///
   /// [context] is the BuildContext that is obtained from the [CanvasTouchDetector] widget's builder function.
   /// The parameter [canvas] is the [Canvas] object that you get in your [paint] method inside [CustomPainter]
   TouchyCanvas(
-    BuildContext context,
-    this._canvas, {ScrollController? scrollController,
-      AxisDirection scrollDirection = AxisDirection.down,
-      GestureDragEndCallback? onPanEnd,
-      GestureDragCancelCallback? onPanCancel,
-  this.panningShapeId}) {
+      BuildContext context,
+      this._canvas, {ScrollController? scrollController,
+        AxisDirection scrollDirection = AxisDirection.down,
+        GestureDragEndCallback? onPanEnd,
+        GestureDragCancelCallback? onPanCancel,
+        this.panningShapeId}) {
     _shapeHandler = ShapeHandler(panningShapeId);
     var touchController = TouchDetectionController.of(context);
     touchController?.addListener((Gesture gesture) {
@@ -69,6 +71,7 @@ class TouchyCanvas {
     double radius,
     Paint paint, {
     HitTestBehavior? hitTestBehavior,
+    StrokeHitBehavior? strokeHitBehavior,
     GestureTapDownCallback? onTapDown,
     GestureTapUpCallback? onTapUp,
     GestureLongPressStartCallback? onLongPressStart,
@@ -90,6 +93,7 @@ class TouchyCanvas {
         radius: radius,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
+        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,
@@ -155,6 +159,7 @@ class TouchyCanvas {
     Rect rect,
     Paint paint, {
     HitTestBehavior? hitTestBehavior,
+    StrokeHitBehavior? strokeHitBehavior,
     GestureTapDownCallback? onTapDown,
     PaintingStyle? paintStyleForTouch,
     GestureTapUpCallback? onTapUp,
@@ -175,6 +180,7 @@ class TouchyCanvas {
     _shapeHandler.addShape(Oval(rect,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
+        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,
@@ -246,6 +252,8 @@ class TouchyCanvas {
     List<Offset> points,
     Paint paint, {
     HitTestBehavior? hitTestBehavior,
+    /// Only applies when [pointMode] is [PointMode.polygon]
+    StrokeHitBehavior? strokeHitBehavior,
     GestureTapDownCallback? onTapDown,
     PaintingStyle? paintStyleForTouch,
     GestureTapUpCallback? onTapUp,
@@ -266,6 +274,7 @@ class TouchyCanvas {
     _shapeHandler.addShape(Point(pointMode, points,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
+        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,
@@ -287,8 +296,8 @@ class TouchyCanvas {
   void drawRRect(
     RRect rrect,
     Paint paint, {
-      Object? shapeId,
     HitTestBehavior? hitTestBehavior,
+    StrokeHitBehavior? strokeHitBehavior,
     GestureTapDownCallback? onTapDown,
     PaintingStyle? paintStyleForTouch,
     GestureTapUpCallback? onTapUp,
@@ -307,9 +316,9 @@ class TouchyCanvas {
   }) {
     _canvas.drawRRect(rrect, paint);
     _shapeHandler.addShape(RoundedRectangle(rrect,
-        id: shapeId,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
+        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,
@@ -379,6 +388,7 @@ class TouchyCanvas {
     Rect rect,
     Paint paint, {
     HitTestBehavior? hitTestBehavior,
+    StrokeHitBehavior? strokeHitBehavior,
     GestureTapDownCallback? onTapDown,
     PaintingStyle? paintStyleForTouch,
     GestureTapUpCallback? onTapUp,
@@ -399,6 +409,7 @@ class TouchyCanvas {
     _shapeHandler.addShape(Rectangle(rect,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
+        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,

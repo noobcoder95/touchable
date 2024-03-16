@@ -10,7 +10,10 @@ class PathShape extends Shape {
       required Paint paint,
       HitTestBehavior? hitTestBehavior,
       PaintingStyle? paintStyleForTouch})
-      : super(hitTestBehavior: hitTestBehavior, paint: paint, gestureCallbackMap: gestureMap);
+      : super(
+            hitTestBehavior: hitTestBehavior,
+            paint: paint,
+            gestureCallbackMap: gestureMap);
 
   @override
   bool isInside(Offset p) {

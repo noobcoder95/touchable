@@ -7,6 +7,7 @@ abstract class Shape {
   final Paint paint;
   final Map<GestureType, Function> gestureCallbackMap;
   final HitTestBehavior hitTestBehavior;
+  final StrokeHitBehavior strokeHitBehavior;
 
   Set<GestureType> get registeredGestures => gestureCallbackMap.keys.toSet();
 
@@ -15,12 +16,14 @@ abstract class Shape {
     Paint? paint,
     Map<GestureType, Function>? gestureCallbackMap,
     HitTestBehavior? hitTestBehavior,
+    StrokeHitBehavior? strokeHitBehavior,
   })  : paint = paint ??
             (Paint()
               ..strokeWidth = ShapeConstant.floatPrecision
               ..style = PaintingStyle.fill),
         gestureCallbackMap = gestureCallbackMap ?? {},
-        hitTestBehavior = hitTestBehavior ?? HitTestBehavior.opaque {
+        hitTestBehavior = hitTestBehavior ?? HitTestBehavior.opaque,
+        strokeHitBehavior = strokeHitBehavior ?? StrokeHitBehavior.onlyOnPaint {
     if (this.paint.strokeWidth == 0) {
       this.paint.strokeWidth = ShapeConstant.floatPrecision;
     }
@@ -30,7 +33,8 @@ abstract class Shape {
 
   Function getCallbackFromGesture(Gesture gesture) {
     if (gestureCallbackMap.containsKey(gesture.gestureType)) {
-      return () => gestureCallbackMap[gesture.gestureType]?.call(gesture.gestureDetail);
+      return () =>
+          gestureCallbackMap[gesture.gestureType]?.call(gesture.gestureDetail);
     } else {
       return () {};
     }

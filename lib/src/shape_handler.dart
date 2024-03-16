@@ -43,7 +43,8 @@ class ShapeHandler {
     return true;
   }
 
-  Offset _getActualOffsetFromScrollController(Offset touchPoint, ScrollController? controller, AxisDirection direction) {
+  Offset _getActualOffsetFromScrollController(
+      Offset touchPoint, ScrollController? controller, AxisDirection direction) {
     if (controller == null) {
       return touchPoint;
     }
@@ -64,7 +65,7 @@ class ShapeHandler {
       shapeId == null ? null : _shapeStack.firstWhereOrNull((shape) => shape.id == shapeId);
 
   List<Shape> _getTouchedShapes(Offset point) {
-    final selectedShapes = <Shape>[];
+    var selectedShapes = <Shape>[];
     for (int i = _shapeStack.length - 1; i >= 0; i--) {
       var shape = _shapeStack[i];
       if (shape.hitTestBehavior == HitTestBehavior.deferToChild) {
@@ -87,10 +88,12 @@ class ShapeHandler {
   }
 
   Future<void> handleGestureEvent(
-      Gesture gesture, {
-        ScrollController? scrollController,
-        AxisDirection direction = AxisDirection.down,
-      }) async {
+    Gesture gesture, {
+    ScrollController? scrollController,
+    AxisDirection direction = AxisDirection.down,
+  }) async {
+    var touchPoint = _getActualOffsetFromScrollController(
+        TouchCanvasUtil.getPointFromGestureDetail(gesture.gestureDetail), scrollController, direction);
     if (!_registeredGestures.contains(gesture.gestureType)) return;
     final panningShapeIdLocal = panningShapeId;
     if (gesture.gestureType == GestureType.onPanUpdate) {
