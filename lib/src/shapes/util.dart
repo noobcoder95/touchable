@@ -1,8 +1,8 @@
 import 'dart:math';
-import 'dart:ui';
 
-import 'package:flutter/material.dart';
-import 'package:touchable/src/types/types.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
+import 'package:touchable/touchable.dart';
 
 class ShapeUtil {
   static double distance(Offset p1, Offset p2) {
@@ -131,5 +131,15 @@ class TouchCanvasUtil {
     }
 
     return map;
+  }
+}
+
+extension IterableExtension<T> on Iterable<T> {
+  /// The first element satisfying [test], or `null` if there are none.
+  T? firstWhereOrNull(bool Function(T element) test) {
+    for (var element in this) {
+      if (test(element)) return element;
+    }
+    return null;
   }
 }

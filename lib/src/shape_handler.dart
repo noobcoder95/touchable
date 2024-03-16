@@ -1,10 +1,8 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:touchable/src/shapes/clip.dart';
 import 'package:touchable/src/shapes/shape.dart';
 import 'package:touchable/src/shapes/util.dart';
-import 'package:touchable/src/types/types.dart';
+import 'package:touchable/touchable.dart';
 
 class ShapeHandler {
   final List<Shape> _shapeStack = [];
@@ -106,15 +104,22 @@ class ShapeHandler {
       }
       previousTouchState.lastTappedDownShapes.clear();
     } else {
+      if (!_registeredGestures.contains(gesture.gestureType)) return;
       var touchPoint = _getActualOffsetFromScrollController(
           TouchCanvasUtil.getPointFromGestureDetail(gesture.gestureDetail),
           scrollController,
           direction);
-      if (!_registeredGestures.contains(gesture.gestureType)) return;
-
       var touchedShapes = _getTouchedShapes(touchPoint);
       if (touchedShapes.isEmpty && gesture.gestureType != GestureType.onHover) {
         return;
+      }
+      if (gesture.gestureType == GestureType.onPanUpdate) {
+        if (panningShapeId != null) {
+          final panningShape = _getShapeById(panningShapeId);
+          if (panningShape != null && panningShape.registeredGestures.contains(gesture.gestureType)) {
+            panningShape.getCallbackFromGesture(gesture)();
+          }
+        }
       }
       if (gesture.gestureType == GestureType.onHover) {
         for (var touchedShape in previousTouchState.lastHoveredShapes) {

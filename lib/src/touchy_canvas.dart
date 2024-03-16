@@ -1,10 +1,8 @@
-import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Image;
-import 'package:touchable/src/canvas_touch_detector.dart';
+import 'package:flutter/services.dart';
 import 'package:touchable/src/shape_handler.dart';
 import 'package:touchable/src/shapes/arc.dart';
 import 'package:touchable/src/shapes/circle.dart';
@@ -16,6 +14,7 @@ import 'package:touchable/src/shapes/point.dart';
 import 'package:touchable/src/shapes/rectangle.dart';
 import 'package:touchable/src/shapes/rounded_rectangle.dart';
 import 'package:touchable/src/shapes/util.dart';
+import 'package:touchable/touchable.dart';
 
 class TouchyCanvas {
   final Canvas _canvas;
@@ -72,6 +71,7 @@ class TouchyCanvas {
     Paint paint, {
     HitTestBehavior? hitTestBehavior,
     GestureTapDownCallback? onTapDown,
+    StrokeHitBehavior? strokeHitBehavior,
     GestureTapUpCallback? onTapUp,
     GestureLongPressStartCallback? onLongPressStart,
     GestureLongPressEndCallback? onLongPressEnd,
@@ -96,6 +96,7 @@ class TouchyCanvas {
         radius: radius,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
+        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,
@@ -173,6 +174,7 @@ class TouchyCanvas {
     Rect rect,
     Paint paint, {
     HitTestBehavior? hitTestBehavior,
+    StrokeHitBehavior? strokeHitBehavior,
     GestureTapDownCallback? onTapDown,
     PaintingStyle? paintStyleForTouch,
     GestureTapUpCallback? onTapUp,
@@ -197,6 +199,7 @@ class TouchyCanvas {
     _shapeHandler.addShape(Oval(rect,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
+        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,
@@ -280,6 +283,8 @@ class TouchyCanvas {
     List<Offset> points,
     Paint paint, {
     HitTestBehavior? hitTestBehavior,
+        /// Only applies when [pointMode] is [PointMode.polygon]
+    StrokeHitBehavior? strokeHitBehavior,
     GestureTapDownCallback? onTapDown,
     PaintingStyle? paintStyleForTouch,
     GestureTapUpCallback? onTapUp,
@@ -304,6 +309,7 @@ class TouchyCanvas {
     _shapeHandler.addShape(Point(pointMode, points,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
+        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,
@@ -330,6 +336,7 @@ class TouchyCanvas {
     RRect rrect,
     Paint paint, {
     HitTestBehavior? hitTestBehavior,
+    StrokeHitBehavior? strokeHitBehavior,
     GestureTapDownCallback? onTapDown,
     PaintingStyle? paintStyleForTouch,
     GestureTapUpCallback? onTapUp,
@@ -354,6 +361,7 @@ class TouchyCanvas {
     _shapeHandler.addShape(RoundedRectangle(rrect,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
+        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,
@@ -435,6 +443,7 @@ class TouchyCanvas {
     Rect rect,
     Paint paint, {
     HitTestBehavior? hitTestBehavior,
+    StrokeHitBehavior? strokeHitBehavior,
     GestureTapDownCallback? onTapDown,
     PaintingStyle? paintStyleForTouch,
     GestureTapUpCallback? onTapUp,
@@ -459,6 +468,7 @@ class TouchyCanvas {
     _shapeHandler.addShape(Rectangle(rect,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
+        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,
@@ -590,66 +600,4 @@ class TouchyCanvas {
         ));
     _shapeHandler.addShape(arc);
   }
-
-//
-//  void drawDRRect(RRect outer, RRect inner, Paint paint) {
-//    _canvas.drawDRRect(outer, inner, paint);
-//    // TODO: implement drawDRRect in SHapeHandler
-//  }
-//
-//
-//  void drawRawAtlas(Image atlas, Float32List rstTransforms, Float32List rects,
-//      Int32List colors, BlendMode blendMode, Rect cullRect, Paint paint) {
-//    // TODO: implement drawRatAtlas
-//    _canvas.drawRawAtlas(atlas, rstTransforms, rects, colors, blendMode, cullRect, paint);
-//  }
-//
-//  void drawImageNine(Image image, Rect center, Rect dst, Paint paint){
-//    // TODO: implement drawImageNine
-//    _canvas.drawImageNine(image, center, dst, paint);
-//  }
-//
-//  void drawImageRect(Image image, Rect src, Rect dst, Paint paint){
-//    // TODO: implement drawImageRect
-//    _canvas.drawImageRect(image, src, dst, paint);
-//  }
-//
-//  void drawVertices(Vertices vertices, BlendMode blendMode, Paint paint) {
-//    _canvas.drawVertices(vertices, blendMode, paint);
-// TODO: implement drawVertices
-//  }
-
-//
-//  void rotate(double radians) {
-//    // TODO: implement rotate
-//  }
-
-//
-//  void scale(double sx, [double sy]) {
-//    // TODO: implement scale
-//  }
-
-//
-//  void skew(double sx, double sy) {
-//    // TODO: implement skew
-//  }
-
-//
-//  void transform(Float64List matrix4) {
-//    // TODO: implement transform
-//  }
-
-//
-//  void translate(double dx, double dy) {
-//   _canvas.translate(dx, dy);
-//    // TODO: implement translate
-//  }
-
-//
-//  void drawAtlas(Image atlas, List<RSTransform> transforms, List<Rect> rects,
-//      List<Color> colors, BlendMode blendMode, Rect cullRect, Paint paint) {
-//    // TODO: implement drawAtlas
-//  }
-//    _canvas.drawAtlas(atlas, transforms, rects, colors, blendMode, cullRect, paint);
-//  }
 }
