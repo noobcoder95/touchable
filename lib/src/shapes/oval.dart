@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:touchable/src/shapes/constant.dart';
@@ -20,10 +21,10 @@ class Oval extends Shape {
       : a = rect.right - rect.center.dx,
         b = rect.center.dy - rect.top,
         super(
-            hitTestBehavior: hitTestBehavior,
-            strokeHitBehavior: strokeHitBehavior,
-            paint: paint ?? Paint(),
-            gestureCallbackMap: gestureMap ?? {});
+          hitTestBehavior: hitTestBehavior,
+          strokeHitBehavior: strokeHitBehavior,
+          paint: paint ?? Paint(),
+          gestureCallbackMap: gestureMap ?? {});
 
   @override
   bool isInside(Offset p) {
@@ -34,14 +35,11 @@ class Oval extends Shape {
         : ShapeConstant.floatPrecision;
 
     bool insideOuterOval = _isInsideOval(p, extraWidth);
-
     if (paint.style == PaintingStyle.stroke) {
       bool outsideInnerOval = !_isInsideOval(p, -extraWidth);
-
       if (strokeHitBehavior == StrokeHitBehavior.withinBounds) {
         return insideOuterOval;
       }
-
       return insideOuterOval && outsideInnerOval;
     } else {
       return insideOuterOval;

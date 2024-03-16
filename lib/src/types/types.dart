@@ -43,6 +43,9 @@ enum GestureType {
   onPanCancel,
   onSecondaryTapDown,
   onSecondaryTapUp,
+  onHover,
+  onEnter,
+  onExit,
 }
 
 /// Changes how [PaintingStyle.stroke] affects hit behavior

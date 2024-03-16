@@ -15,13 +15,13 @@ class Point extends Shape {
       {Map<GestureType, Function>? gestureMap,
       Paint? paint,
       HitTestBehavior? hitTestBehavior,
-      StrokeHitBehavior? strokeHitBehavior,
-      PaintingStyle? paintStyleForTouch})
+        StrokeHitBehavior? strokeHitBehavior,
+        PaintingStyle? paintStyleForTouch})
       : super(
-            hitTestBehavior: hitTestBehavior,
-            strokeHitBehavior: strokeHitBehavior,
-            paint: paint ?? Paint(),
-            gestureCallbackMap: gestureMap ?? {});
+      hitTestBehavior: hitTestBehavior,
+      strokeHitBehavior: strokeHitBehavior,
+      paint: paint ?? Paint(),
+      gestureCallbackMap: gestureMap ?? {});
 
   @override
   bool isInside(Offset p) {
@@ -65,7 +65,7 @@ class Point extends Shape {
       return Circle(center: point, radius: extraWidth).isInside(queryPoint);
     } else {
       return Rect.fromCenter(
-              center: point, width: extraWidth * 2, height: extraWidth * 2)
+          center: point, width: extraWidth * 2, height: extraWidth * 2)
           .contains(queryPoint);
     }
   }
@@ -109,18 +109,17 @@ class PolygonUtil {
     return false;
   }
 
-  static bool checkInside(List<Offset> poly, Offset p) {
+  static bool checkInside(List<Offset> poly, Offset p, Paint paint) {
     int n = poly.length;
     if (n < 3) {
       return false;
     } //when polygon has less than 3 edge, it is not polygon
-    Line exline = Line(p,
-        Offset(9999, p.dy)); //create a point at infinity, y is same as point p
+    Line exline = Line(p, Offset(9999, p.dy)); //create a point at infinity, y is same as point p
     int count = 0;
     int i = 0;
     do {
       //forming a line from two consecutive points of poly
-      Line side = Line(poly[i], poly[(i + 1) % n]);
+      Line side = Line(poly[i], poly[(i + 1) % n], paint: paint);
       if (_isIntersect(side, exline)) {
         //if side is intersects exline
         if (_direction(side.p1, p, side.p2) == 0) return side.isInside(p);

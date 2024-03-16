@@ -32,7 +32,10 @@ class ShapeHandler {
   ///
   /// Looking at above diagram , given the stack position 3 , this function returns all ClipShapes that are pushed before 3 into the clip stack.
   List<ClipShape> _getClipShapesBelowPosition(int position) {
-    return clipItems.where((element) => element.position <= position).map((e) => e.clipShape).toList();
+    return clipItems
+        .where((element) => element.position <= position)
+        .map((e) => e.clipShape)
+        .toList();
   }
 
   ///returns [true] if point lies inside all the clipShapes

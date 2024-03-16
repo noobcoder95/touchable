@@ -35,6 +35,12 @@ class TouchCanvasUtil {
         return (gestureDetail as ScaleUpdateDetails).localFocalPoint;
       case ForcePressDetails:
         return (gestureDetail as ForcePressDetails).localPosition;
+      case PointerEnterEvent:
+        return (gestureDetail as PointerEnterEvent).localPosition;
+      case PointerExitEvent:
+        return (gestureDetail as PointerExitEvent).localPosition;
+      case PointerHoverEvent:
+        return (gestureDetail as PointerHoverEvent).localPosition;
       default:
         throw Exception('gestureDetail.runTimeType = ${gestureDetail.runtimeType} is not recognized !');
     }
@@ -55,6 +61,9 @@ class TouchCanvasUtil {
     required GestureDragDownCallback? onPanDown,
     required GestureTapDownCallback? onSecondaryTapDown,
     required GestureTapUpCallback? onSecondaryTapUp,
+    required PointerEnterEventListener? onEnter,
+    required PointerExitEventListener? onExit,
+    required PointerHoverEventListener? onHover,
   }) {
     var map = <GestureType, Function>{};
     if (onTapDown != null) {
@@ -100,6 +109,16 @@ class TouchCanvasUtil {
     }
     if (onSecondaryTapUp != null) {
       map.putIfAbsent(GestureType.onSecondaryTapUp, () => onSecondaryTapUp);
+    }
+
+    if (onEnter != null) {
+      map.putIfAbsent(GestureType.onEnter, () => onEnter);
+    }
+    if (onExit != null) {
+      map.putIfAbsent(GestureType.onExit, () => onExit);
+    }
+    if (onHover != null) {
+      map.putIfAbsent(GestureType.onHover, () => onHover);
     }
 
     return map;

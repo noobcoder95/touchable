@@ -114,11 +114,11 @@ class MyPainter extends CustomPainter {
   void drawNose(TouchyCanvas canvas, Size size) {
     var center = Offset(size.width / 2, size.height / 2);
     var noseColor =
-    ColorTween(begin: Colors.blueGrey, end: Colors.lightBlueAccent).animate(
-        CurvedAnimation(
-            parent: noseAnimationController, curve: Curves.bounceOut));
+        ColorTween(begin: Colors.blueGrey, end: Colors.lightBlueAccent).animate(
+            CurvedAnimation(
+                parent: noseAnimationController, curve: Curves.bounceOut));
     var noseLength =
-    Tween<double>(begin: 0, end: 100).animate(noseAnimationController);
+        Tween<double>(begin: 0, end: 100).animate(noseAnimationController);
     var upperbound = noseAnimationController.upperBound;
 
     void drawNose(Color color, double extraLength) {
@@ -160,8 +160,8 @@ class MyPainter extends CustomPainter {
           Offset(center.dx - xOffset, center.dy - 40), 10, Paint());
       canvas.drawCircle(Offset(center.dx + xOffset, center.dy - 50), 20,
           Paint()..color = Colors.transparent, onTapDown: (_) {
-            eyeAnimationController.reverse();
-          });
+        eyeAnimationController.reverse();
+      });
     }
 
     void drawEyeLid(double xOffset) {

@@ -34,14 +34,11 @@ class _CanvasTouchDetectorState extends State<CanvasTouchDetector> {
 
   @override
   Widget build(BuildContext context) {
-    return TouchDetectionController(touchController, addStreamListener,
+    return TouchDetectionController(
+        touchController,
+        addStreamListener,
         child: GestureDetector(
           behavior: HitTestBehavior.translucent,
-          child: Builder(
-            builder: (context) {
-              return widget.builder(context);
-            },
-          ),
           onTapDown: !widget.gesturesToOverride.contains(GestureType.onTapDown)
               ? null
               : (tapDetail) {
@@ -168,35 +165,67 @@ class _CanvasTouchDetectorState extends State<CanvasTouchDetector> {
           onPanUpdate:
               !widget.gesturesToOverride.contains(GestureType.onPanUpdate)
                   ? null
-              : (tapDetail) {
-                  touchController.add(Gesture(GestureType.onPanUpdate, tapDetail));
-                },
+                  : (tapDetail) {
+                      touchController
+                          .add(Gesture(GestureType.onPanUpdate, tapDetail));
+                    },
           onPanDown: !widget.gesturesToOverride.contains(GestureType.onPanDown)
               ? null
               : (tapDetail) {
-                  touchController.add(Gesture(GestureType.onPanDown, tapDetail));
+                  touchController
+                      .add(Gesture(GestureType.onPanDown, tapDetail));
                 },
           onPanEnd: !widget.gesturesToOverride.contains(GestureType.onPanEnd)
               ? null
               : (tapDetail) {
-                  touchController.add(Gesture(GestureType.onPanEnd, tapDetail));
-                },
+            touchController.add(Gesture(GestureType.onPanEnd, tapDetail));
+          },
           onPanCancel: !widget.gesturesToOverride.contains(GestureType.onPanCancel)
               ? null
               : () {
-                  touchController.add(Gesture(GestureType.onPanCancel, null));
-                },
-          onSecondaryTapDown: !widget.gesturesToOverride.contains(GestureType.onSecondaryTapDown)
+            touchController.add(Gesture(GestureType.onPanCancel, null));
+          },
+          onSecondaryTapDown: !widget.gesturesToOverride
+                  .contains(GestureType.onSecondaryTapDown)
               ? null
               : (tapDetail) {
-                  touchController.add(Gesture(GestureType.onSecondaryTapDown, tapDetail));
+                  touchController
+                      .add(Gesture(GestureType.onSecondaryTapDown, tapDetail));
                 },
-          onSecondaryTapUp: !widget.gesturesToOverride.contains(GestureType.onSecondaryTapUp)
+          onSecondaryTapUp: !widget.gesturesToOverride
+                  .contains(GestureType.onSecondaryTapUp)
               ? null
               : (tapDetail) {
                   touchController
                       .add(Gesture(GestureType.onSecondaryTapUp, tapDetail));
-                }));
+                },
+          child: MouseRegion(
+            onEnter: !widget.gesturesToOverride.contains(GestureType.onEnter)
+                ? null
+                : (mouseEnterDetail) {
+              print('onEnter: ${mouseEnterDetail.original?.localPosition}');
+              touchController.add(
+                  Gesture(GestureType.onEnter, mouseEnterDetail.original));
+            },
+            onExit: !widget.gesturesToOverride.contains(GestureType.onExit)
+                ? null
+                : (mouseExitDetail) {
+              touchController.add(
+                  Gesture(GestureType.onExit, mouseExitDetail.original));
+            },
+            onHover: !widget.gesturesToOverride.contains(GestureType.onHover)
+                ? null
+                : (mouseHoverDetail) {
+              touchController.add(
+                  Gesture(GestureType.onHover, mouseHoverDetail.original));
+            },
+            child: Builder(
+              builder: (context) {
+                return widget.builder(context);
+              },
+            ),
+          ),
+        ));
   }
 
   @override
