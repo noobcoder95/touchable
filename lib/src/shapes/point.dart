@@ -49,7 +49,7 @@ class Point extends Shape {
         }
 
         if (strokeHitBehavior == StrokeHitBehavior.withinBounds) {
-          return isOnLines || PolygonUtil.checkInside(points, p);
+          return isOnLines || PolygonUtil.checkInside(points, p, paint);
         }
 
         return isOnLines;
