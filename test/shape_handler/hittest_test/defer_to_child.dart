@@ -16,31 +16,31 @@ import 'package:touchable/touchable.dart';
 
 void testDeferToChild() {
   group('SHape Handler : Defer to child hittest', () {
-    var shapeHandler = ShapeHandler(null);
+    var shapeHandler = ShapeHandler();
     var resultList = [];
 
     Map<GestureType, Function> getMap(Function function) {
       return TouchCanvasUtil.getGestureCallbackMap(
-        onTapDown: (detail) {
-          function(detail);
-        },
-        onTapUp: null,
-        onLongPressStart: null,
-        onLongPressEnd: null,
-        onLongPressMoveUpdate: null,
-        onForcePressStart: null,
-        onForcePressEnd: null,
-        onForcePressPeak: null,
-        onForcePressUpdate: null,
-        onPanStart: null,
-        onPanUpdate: null,
-        onPanDown: null,
-        onSecondaryTapDown: null,
-        onSecondaryTapUp: null,
-        onEnter: null,
-        onExit: null,
-        onHover: null,
-      );
+          onTapDown: (detail) {
+            function(detail);
+          },
+          onTapUp: null,
+          onLongPressStart: null,
+          onLongPressEnd: null,
+          onLongPressMoveUpdate: null,
+          onForcePressStart: null,
+          onForcePressEnd: null,
+          onForcePressPeak: null,
+          onForcePressUpdate: null,
+          onPanStart: null,
+          onPanUpdate: null,
+          onPanDown: null,
+          onHover: null,
+          onTapCancel: null,
+          onEnter: null,
+          onExit: null,
+          onSecondaryTapDown: null,
+          onSecondaryTapUp: null);
     }
 
     void addAllShapes() {
@@ -137,7 +137,8 @@ void testDeferToChild() {
     void handleGesture(Offset position, List<String> expected) {
       resultList = [];
       shapeHandler.handleGestureEvent(Gesture(
-          GestureType.onTapDown, TapDownDetails(localPosition: position)));
+          GestureType.onTapDown, TapDownDetails(localPosition: position)),
+          PreviousTouchState());
       expect(resultList, expected);
     }
 

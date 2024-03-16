@@ -1,6 +1,7 @@
 import 'dart:math';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:touchable/src/types/types.dart';
 
 class ShapeUtil {
@@ -42,6 +43,8 @@ class TouchCanvasUtil {
         return (gestureDetail as PointerExitEvent).localPosition;
       case PointerHoverEvent:
         return (gestureDetail as PointerHoverEvent).localPosition;
+      case OnHoverDetail:
+        return (gestureDetail as OnHoverDetail).localPosition;
       default:
         throw Exception('gestureDetail.runTimeType = ${gestureDetail.runtimeType} is not recognized !');
     }
@@ -65,6 +68,7 @@ class TouchCanvasUtil {
     required PointerEnterEventListener? onEnter,
     required PointerExitEventListener? onExit,
     required PointerHoverEventListener? onHover,
+    required GestureTapCancelCallback? onTapCancel
   }) {
     var map = <GestureType, Function>{};
     if (onTapDown != null) {
@@ -122,16 +126,10 @@ class TouchCanvasUtil {
       map.putIfAbsent(GestureType.onHover, () => onHover);
     }
 
-    return map;
-  }
-}
-
-extension IterableExtension<T> on Iterable<T> {
-  /// The first element satisfying [test], or `null` if there are none.
-  T? firstWhereOrNull(bool Function(T element) test) {
-    for (var element in this) {
-      if (test(element)) return element;
+    if(onTapCancel != null) {
+      map.putIfAbsent(GestureType.onTapCancel, () => (_) => onTapCancel);
     }
-    return null;
+
+    return map;
   }
 }

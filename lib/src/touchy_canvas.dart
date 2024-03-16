@@ -1,8 +1,9 @@
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Image;
-import 'package:flutter/services.dart';
 import 'package:touchable/src/canvas_touch_detector.dart';
 import 'package:touchable/src/shape_handler.dart';
 import 'package:touchable/src/shapes/arc.dart';
@@ -15,7 +16,6 @@ import 'package:touchable/src/shapes/point.dart';
 import 'package:touchable/src/shapes/rectangle.dart';
 import 'package:touchable/src/shapes/rounded_rectangle.dart';
 import 'package:touchable/src/shapes/util.dart';
-import 'package:touchable/src/types/types.dart';
 
 class TouchyCanvas {
   final Canvas _canvas;
@@ -43,6 +43,7 @@ class TouchyCanvas {
       } else {
         _shapeHandler.handleGestureEvent(
           gesture,
+          touchController.previousTouchState,
           scrollController: scrollController,
           direction: scrollDirection,
         );
@@ -60,8 +61,7 @@ class TouchyCanvas {
     _shapeHandler.addShape(ClipRRectShape(rrect));
   }
 
-  void clipRect(Rect rect,
-      {ClipOp clipOp = ClipOp.intersect, bool doAntiAlias = true}) {
+  void clipRect(Rect rect, {ClipOp clipOp = ClipOp.intersect, bool doAntiAlias = true}) {
     _canvas.clipRect(rect, clipOp: clipOp, doAntiAlias: doAntiAlias);
     _shapeHandler.addShape(ClipRectShape(rect, clipOp: clipOp));
   }
@@ -71,7 +71,6 @@ class TouchyCanvas {
     double radius,
     Paint paint, {
     HitTestBehavior? hitTestBehavior,
-    StrokeHitBehavior? strokeHitBehavior,
     GestureTapDownCallback? onTapDown,
     GestureTapUpCallback? onTapUp,
     GestureLongPressStartCallback? onLongPressStart,
@@ -89,6 +88,7 @@ class TouchyCanvas {
     PointerEnterEventListener? onEnter,
     PointerExitEventListener? onExit,
     PointerHoverEventListener? onHover,
+    GestureTapCancelCallback? onTapCancel
   }) {
     _canvas.drawCircle(c, radius, paint);
     _shapeHandler.addShape(Circle(
@@ -96,7 +96,6 @@ class TouchyCanvas {
         radius: radius,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
-        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,
@@ -115,6 +114,7 @@ class TouchyCanvas {
           onEnter: onEnter,
           onExit: onExit,
           onHover: onHover,
+          onTapCancel: onTapCancel,
         )));
   }
 
@@ -141,6 +141,7 @@ class TouchyCanvas {
     PointerEnterEventListener? onEnter,
     PointerExitEventListener? onExit,
     PointerHoverEventListener? onHover,
+    GestureTapCancelCallback? onTapCancel
   }) {
     _canvas.drawLine(p1, p2, paint);
     _shapeHandler.addShape(Line(p1, p2,
@@ -164,6 +165,7 @@ class TouchyCanvas {
           onEnter: onEnter,
           onExit: onExit,
           onHover: onHover,
+          onTapCancel: onTapCancel,
         )));
   }
 
@@ -171,7 +173,6 @@ class TouchyCanvas {
     Rect rect,
     Paint paint, {
     HitTestBehavior? hitTestBehavior,
-    StrokeHitBehavior? strokeHitBehavior,
     GestureTapDownCallback? onTapDown,
     PaintingStyle? paintStyleForTouch,
     GestureTapUpCallback? onTapUp,
@@ -190,12 +191,12 @@ class TouchyCanvas {
     PointerEnterEventListener? onEnter,
     PointerExitEventListener? onExit,
     PointerHoverEventListener? onHover,
+    GestureTapCancelCallback? onTapCancel
   }) {
     _canvas.drawOval(rect, paint);
     _shapeHandler.addShape(Oval(rect,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
-        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,
@@ -214,6 +215,7 @@ class TouchyCanvas {
           onEnter: onEnter,
           onExit: onExit,
           onHover: onHover,
+          onTapCancel: onTapCancel,
         )));
   }
 
@@ -245,6 +247,7 @@ class TouchyCanvas {
     PointerEnterEventListener? onEnter,
     PointerExitEventListener? onExit,
     PointerHoverEventListener? onHover,
+    GestureTapCancelCallback? onTapCancel
   }) {
     _canvas.drawPath(path, paint);
     _shapeHandler.addShape(PathShape(path,
@@ -268,6 +271,7 @@ class TouchyCanvas {
           onEnter: onEnter,
           onExit: onExit,
           onHover: onHover,
+          onTapCancel: onTapCancel,
         )));
   }
 
@@ -276,8 +280,6 @@ class TouchyCanvas {
     List<Offset> points,
     Paint paint, {
     HitTestBehavior? hitTestBehavior,
-    /// Only applies when [pointMode] is [PointMode.polygon]
-    StrokeHitBehavior? strokeHitBehavior,
     GestureTapDownCallback? onTapDown,
     PaintingStyle? paintStyleForTouch,
     GestureTapUpCallback? onTapUp,
@@ -296,12 +298,12 @@ class TouchyCanvas {
     PointerEnterEventListener? onEnter,
     PointerExitEventListener? onExit,
     PointerHoverEventListener? onHover,
+    GestureTapCancelCallback? onTapCancel
   }) {
     _canvas.drawPoints(pointMode, points, paint);
     _shapeHandler.addShape(Point(pointMode, points,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
-        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,
@@ -320,6 +322,7 @@ class TouchyCanvas {
           onEnter: onEnter,
           onExit: onExit,
           onHover: onHover,
+          onTapCancel: onTapCancel,
         )));
   }
 
@@ -327,7 +330,6 @@ class TouchyCanvas {
     RRect rrect,
     Paint paint, {
     HitTestBehavior? hitTestBehavior,
-    StrokeHitBehavior? strokeHitBehavior,
     GestureTapDownCallback? onTapDown,
     PaintingStyle? paintStyleForTouch,
     GestureTapUpCallback? onTapUp,
@@ -346,12 +348,12 @@ class TouchyCanvas {
     PointerEnterEventListener? onEnter,
     PointerExitEventListener? onExit,
     PointerHoverEventListener? onHover,
+    GestureTapCancelCallback? onTapCancel
   }) {
     _canvas.drawRRect(rrect, paint);
     _shapeHandler.addShape(RoundedRectangle(rrect,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
-        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,
@@ -370,6 +372,7 @@ class TouchyCanvas {
           onEnter: onEnter,
           onExit: onExit,
           onHover: onHover,
+          onTapCancel: onTapCancel,
         )));
   }
 
@@ -396,6 +399,7 @@ class TouchyCanvas {
     PointerEnterEventListener? onEnter,
     PointerExitEventListener? onExit,
     PointerHoverEventListener? onHover,
+    GestureTapCancelCallback? onTapCancel
   }) {
     _canvas.drawRawPoints(pointMode, points, paint);
     List<Offset> offsetPoints = [];
@@ -423,6 +427,7 @@ class TouchyCanvas {
           onEnter: onEnter,
           onExit: onExit,
           onHover: onHover,
+          onTapCancel: onTapCancel,
         )));
   }
 
@@ -430,7 +435,6 @@ class TouchyCanvas {
     Rect rect,
     Paint paint, {
     HitTestBehavior? hitTestBehavior,
-    StrokeHitBehavior? strokeHitBehavior,
     GestureTapDownCallback? onTapDown,
     PaintingStyle? paintStyleForTouch,
     GestureTapUpCallback? onTapUp,
@@ -449,12 +453,12 @@ class TouchyCanvas {
     PointerEnterEventListener? onEnter,
     PointerExitEventListener? onExit,
     PointerHoverEventListener? onHover,
+    GestureTapCancelCallback? onTapCancel
   }) {
     _canvas.drawRect(rect, paint);
     _shapeHandler.addShape(Rectangle(rect,
         paint: paint,
         hitTestBehavior: hitTestBehavior,
-        strokeHitBehavior: strokeHitBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
           onTapDown: onTapDown,
           onTapUp: onTapUp,
@@ -473,11 +477,11 @@ class TouchyCanvas {
           onEnter: onEnter,
           onExit: onExit,
           onHover: onHover,
+          onTapCancel: onTapCancel,
         )));
   }
 
-  void drawShadow(
-      Path path, Color color, double elevation, bool transparentOccluder) {
+  void drawShadow(Path path, Color color, double elevation, bool transparentOccluder) {
     _canvas.drawShadow(path, color, elevation, transparentOccluder);
     // _shapeHandler.addShape(PathShape(path));
   }
@@ -505,11 +509,10 @@ class TouchyCanvas {
     PointerEnterEventListener? onEnter,
     PointerExitEventListener? onExit,
     PointerHoverEventListener? onHover,
+    GestureTapCancelCallback? onTapCancel
   }) {
     _canvas.drawImage(image, p, paint);
-    _shapeHandler.addShape(Rectangle(
-        Rect.fromLTWH(
-            p.dx, p.dy, image.width.toDouble(), image.height.toDouble()),
+    _shapeHandler.addShape(Rectangle(Rect.fromLTWH(p.dx, p.dy, image.width.toDouble(), image.height.toDouble()),
         paint: paint,
         hitTestBehavior: hitTestBehavior,
         gestureMap: TouchCanvasUtil.getGestureCallbackMap(
@@ -530,6 +533,7 @@ class TouchyCanvas {
           onEnter: onEnter,
           onExit: onExit,
           onHover: onHover,
+          onTapCancel: onTapCancel,
         )));
   }
 
@@ -558,6 +562,7 @@ class TouchyCanvas {
     PointerEnterEventListener? onEnter,
     PointerExitEventListener? onExit,
     PointerHoverEventListener? onHover,
+    GestureTapCancelCallback? onTapCancel
   }) {
     _canvas.drawArc(rect, startAngle, sweepAngle, useCenter, paint);
     var arc = Arc(rect, startAngle, sweepAngle, useCenter,
@@ -581,6 +586,7 @@ class TouchyCanvas {
           onEnter: onEnter,
           onExit: onExit,
           onHover: onHover,
+          onTapCancel: onTapCancel,
         ));
     _shapeHandler.addShape(arc);
   }

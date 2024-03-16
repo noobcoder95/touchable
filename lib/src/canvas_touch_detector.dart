@@ -26,6 +26,7 @@ class _CanvasTouchDetectorState extends State<CanvasTouchDetector> {
   final StreamController<Gesture> touchController =
       StreamController.broadcast();
   StreamSubscription<Gesture>? streamSubscription;
+  final PreviousTouchState previousTouchState = PreviousTouchState();
 
   Future<void> addStreamListener(Function(Gesture) callBack) async {
     await streamSubscription?.cancel();
@@ -37,144 +38,151 @@ class _CanvasTouchDetectorState extends State<CanvasTouchDetector> {
     return TouchDetectionController(
         touchController,
         addStreamListener,
+        previousTouchState: previousTouchState,
         child: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTapDown: !widget.gesturesToOverride.contains(GestureType.onTapDown)
               ? null
               : (tapDetail) {
-                  touchController
-                      .add(Gesture(GestureType.onTapDown, tapDetail));
-                },
+            touchController
+                .add(Gesture(GestureType.onTapDown, tapDetail));
+          },
           onTapUp: !widget.gesturesToOverride.contains(GestureType.onTapUp)
               ? null
               : (tapDetail) {
-                  touchController.add(Gesture(GestureType.onTapUp, tapDetail));
-                },
+            touchController.add(Gesture(GestureType.onTapUp, tapDetail));
+          },
+          onTapCancel: !widget.gesturesToOverride
+              .contains(GestureType.onTapCancel)
+              ? null
+              : () {
+            touchController.add(Gesture(GestureType.onTapCancel, null));
+          },
           onHorizontalDragDown: !widget.gesturesToOverride
-                  .contains(GestureType.onHorizontalDragDown)
+              .contains(GestureType.onHorizontalDragDown)
               ? null
               : (tapDetail) {
-                  touchController.add(
-                      Gesture(GestureType.onHorizontalDragDown, tapDetail));
-                },
+            touchController.add(
+                Gesture(GestureType.onHorizontalDragDown, tapDetail));
+          },
           onHorizontalDragStart: !widget.gesturesToOverride
-                  .contains(GestureType.onHorizontalDragStart)
+              .contains(GestureType.onHorizontalDragStart)
               ? null
               : (tapDetail) {
-                  touchController.add(
-                      Gesture(GestureType.onHorizontalDragStart, tapDetail));
-                },
+            touchController.add(
+                Gesture(GestureType.onHorizontalDragStart, tapDetail));
+          },
           onHorizontalDragUpdate: !widget.gesturesToOverride
-                  .contains(GestureType.onHorizontalDragUpdate)
+              .contains(GestureType.onHorizontalDragUpdate)
               ? null
               : (tapDetail) {
-                  touchController.add(
-                      Gesture(GestureType.onHorizontalDragUpdate, tapDetail));
-                },
+            touchController.add(
+                Gesture(GestureType.onHorizontalDragUpdate, tapDetail));
+          },
           onVerticalDragDown: !widget.gesturesToOverride
-                  .contains(GestureType.onVerticalDragDown)
+              .contains(GestureType.onVerticalDragDown)
               ? null
               : (tapDetail) {
-                  touchController
-                      .add(Gesture(GestureType.onVerticalDragDown, tapDetail));
-                },
+            touchController
+                .add(Gesture(GestureType.onVerticalDragDown, tapDetail));
+          },
           onVerticalDragStart: !widget.gesturesToOverride
-                  .contains(GestureType.onVerticalDragStart)
+              .contains(GestureType.onVerticalDragStart)
               ? null
               : (tapDetail) {
-                  touchController
-                      .add(Gesture(GestureType.onVerticalDragStart, tapDetail));
-                },
+            touchController
+                .add(Gesture(GestureType.onVerticalDragStart, tapDetail));
+          },
           onVerticalDragUpdate: !widget.gesturesToOverride
-                  .contains(GestureType.onVerticalDragUpdate)
+              .contains(GestureType.onVerticalDragUpdate)
               ? null
               : (tapDetail) {
-                  touchController.add(
-                      Gesture(GestureType.onVerticalDragUpdate, tapDetail));
-                },
+            touchController.add(
+                Gesture(GestureType.onVerticalDragUpdate, tapDetail));
+          },
           onLongPressStart: !widget.gesturesToOverride
-                  .contains(GestureType.onLongPressStart)
+              .contains(GestureType.onLongPressStart)
               ? null
               : (tapDetail) {
-                  touchController
-                      .add(Gesture(GestureType.onLongPressStart, tapDetail));
-                },
+            touchController
+                .add(Gesture(GestureType.onLongPressStart, tapDetail));
+          },
           onLongPressEnd:
-              !widget.gesturesToOverride.contains(GestureType.onLongPressEnd)
-                  ? null
-                  : (tapDetail) {
-                      touchController
-                          .add(Gesture(GestureType.onLongPressEnd, tapDetail));
-                    },
+          !widget.gesturesToOverride.contains(GestureType.onLongPressEnd)
+              ? null
+              : (tapDetail) {
+            touchController
+                .add(Gesture(GestureType.onLongPressEnd, tapDetail));
+          },
           onLongPressMoveUpdate: !widget.gesturesToOverride
-                  .contains(GestureType.onLongPressMoveUpdate)
+              .contains(GestureType.onLongPressMoveUpdate)
               ? null
               : (tapDetail) {
-                  touchController.add(
-                      Gesture(GestureType.onLongPressMoveUpdate, tapDetail));
-                },
+            touchController.add(
+                Gesture(GestureType.onLongPressMoveUpdate, tapDetail));
+          },
           onScaleStart:
-              !widget.gesturesToOverride.contains(GestureType.onScaleStart)
-                  ? null
-                  : (tapDetail) {
-                      touchController
-                          .add(Gesture(GestureType.onScaleStart, tapDetail));
-                    },
+          !widget.gesturesToOverride.contains(GestureType.onScaleStart)
+              ? null
+              : (tapDetail) {
+            touchController
+                .add(Gesture(GestureType.onScaleStart, tapDetail));
+          },
           onScaleUpdate:
-              !widget.gesturesToOverride.contains(GestureType.onScaleUpdate)
-                  ? null
-                  : (tapDetail) {
-                      touchController
-                          .add(Gesture(GestureType.onScaleUpdate, tapDetail));
-                    },
+          !widget.gesturesToOverride.contains(GestureType.onScaleUpdate)
+              ? null
+              : (tapDetail) {
+            touchController
+                .add(Gesture(GestureType.onScaleUpdate, tapDetail));
+          },
           onForcePressStart: !widget.gesturesToOverride
-                  .contains(GestureType.onForcePressStart)
+              .contains(GestureType.onForcePressStart)
               ? null
               : (tapDetail) {
-                  touchController
-                      .add(Gesture(GestureType.onForcePressStart, tapDetail));
-                },
+            touchController
+                .add(Gesture(GestureType.onForcePressStart, tapDetail));
+          },
           onForcePressEnd:
-              !widget.gesturesToOverride.contains(GestureType.onForcePressEnd)
-                  ? null
-                  : (tapDetail) {
-                      touchController
-                          .add(Gesture(GestureType.onForcePressEnd, tapDetail));
-                    },
+          !widget.gesturesToOverride.contains(GestureType.onForcePressEnd)
+              ? null
+              : (tapDetail) {
+            touchController
+                .add(Gesture(GestureType.onForcePressEnd, tapDetail));
+          },
           onForcePressPeak: !widget.gesturesToOverride
-                  .contains(GestureType.onForcePressPeak)
+              .contains(GestureType.onForcePressPeak)
               ? null
               : (tapDetail) {
-                  touchController
-                      .add(Gesture(GestureType.onForcePressPeak, tapDetail));
-                },
+            touchController
+                .add(Gesture(GestureType.onForcePressPeak, tapDetail));
+          },
           onForcePressUpdate: !widget.gesturesToOverride
-                  .contains(GestureType.onForcePressUpdate)
+              .contains(GestureType.onForcePressUpdate)
               ? null
               : (tapDetail) {
-                  touchController
-                      .add(Gesture(GestureType.onForcePressUpdate, tapDetail));
-                },
+            touchController
+                .add(Gesture(GestureType.onForcePressUpdate, tapDetail));
+          },
           onPanStart:
-              !widget.gesturesToOverride.contains(GestureType.onPanStart)
-                  ? null
-                  : (tapDetail) {
-                      touchController
-                          .add(Gesture(GestureType.onPanStart, tapDetail));
-                    },
+          !widget.gesturesToOverride.contains(GestureType.onPanStart)
+              ? null
+              : (tapDetail) {
+            touchController
+                .add(Gesture(GestureType.onPanStart, tapDetail));
+          },
           onPanUpdate:
-              !widget.gesturesToOverride.contains(GestureType.onPanUpdate)
-                  ? null
-                  : (tapDetail) {
-                      touchController
-                          .add(Gesture(GestureType.onPanUpdate, tapDetail));
-                    },
+          !widget.gesturesToOverride.contains(GestureType.onPanUpdate)
+              ? null
+              : (tapDetail) {
+            touchController
+                .add(Gesture(GestureType.onPanUpdate, tapDetail));
+          },
           onPanDown: !widget.gesturesToOverride.contains(GestureType.onPanDown)
               ? null
               : (tapDetail) {
-                  touchController
-                      .add(Gesture(GestureType.onPanDown, tapDetail));
-                },
+            touchController
+                .add(Gesture(GestureType.onPanDown, tapDetail));
+          },
           onPanEnd: !widget.gesturesToOverride.contains(GestureType.onPanEnd)
               ? null
               : (tapDetail) {
@@ -186,20 +194,21 @@ class _CanvasTouchDetectorState extends State<CanvasTouchDetector> {
             touchController.add(Gesture(GestureType.onPanCancel, null));
           },
           onSecondaryTapDown: !widget.gesturesToOverride
-                  .contains(GestureType.onSecondaryTapDown)
+              .contains(GestureType.onSecondaryTapDown)
               ? null
               : (tapDetail) {
-                  touchController
-                      .add(Gesture(GestureType.onSecondaryTapDown, tapDetail));
-                },
+            touchController
+                .add(Gesture(GestureType.onSecondaryTapDown, tapDetail));
+          },
           onSecondaryTapUp: !widget.gesturesToOverride
-                  .contains(GestureType.onSecondaryTapUp)
+              .contains(GestureType.onSecondaryTapUp)
               ? null
               : (tapDetail) {
-                  touchController
-                      .add(Gesture(GestureType.onSecondaryTapUp, tapDetail));
-                },
+            touchController
+                .add(Gesture(GestureType.onSecondaryTapUp, tapDetail));
+          },
           child: MouseRegion(
+            hitTestBehavior: HitTestBehavior.translucent,
             onEnter: !widget.gesturesToOverride.contains(GestureType.onEnter)
                 ? null
                 : (mouseEnterDetail) {
@@ -238,13 +247,17 @@ class _CanvasTouchDetectorState extends State<CanvasTouchDetector> {
 class TouchDetectionController extends InheritedWidget {
   final StreamController<Gesture> _controller;
   final Function addListener;
+  final PreviousTouchState previousTouchState;
 
   bool get hasListener => _controller.hasListener;
 
   StreamController<Gesture> get controller => _controller;
 
-  const TouchDetectionController(this._controller, this.addListener,
-      {required Widget child})
+  const TouchDetectionController(
+      this._controller,
+      this.addListener, {
+        required Widget child,
+        required this.previousTouchState})
       : super(child: child);
 
   static TouchDetectionController? of(BuildContext context) =>
@@ -254,4 +267,9 @@ class TouchDetectionController extends InheritedWidget {
   bool updateShouldNotify(InheritedWidget oldWidget) {
     return false;
   }
+}
+
+class PreviousTouchState {
+  final List<Shape> lastHoveredShapes = [];
+  final List<Shape> lastTappedDownShapes = [];
 }
